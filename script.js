@@ -8,4 +8,58 @@ window.onload = () => {
         }
         table.appendChild(tr);
     }
+    renderFigure();
+}
+
+/*
+ Белые:
+ 1 - пешка
+ 2 - конь
+ 3 - слон
+ 4 - ладья
+ 5 - ферзь
+ 6 - король
+ Черные:
+ 11 - пешка
+ 12 - конь
+ 13 - слон
+ 14 - ладья
+ 15 - ферзь
+ 16 - король
+ */
+
+let field = [
+    [14, 12, 13, 15, 16, 13, 12, 14],
+    [11, 11, 11, 11, 11, 11, 11, 11],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [4, 2, 3, 5, 6, 3, 2, 4],
+];
+
+function renderFigure() {
+    for (let row = 0; row < 8; row++) {
+        for (let column = 0; column < 8; column++) {
+            switch (field[row][column]) {
+                case 1:
+                    putFigure(row, column, 'white-pawn');
+                    break;
+                case 2: 
+                    putFigure(row, column, 'white-horse');
+                    break;
+                //  дописать кейсы для 
+            }
+        }
+    }
+}
+function putFigure(row, column, figure) {
+    let table = document.getElementById('game-field');
+    let td = table.children[row].children[column];
+    td.innerHTML = "";
+    let div = document.createElement("div");
+    div.classList.add(figure);
+    div.classList.add('figure');
+    td.appendChild(div);
 }
