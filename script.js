@@ -4,6 +4,7 @@ window.onload = () => {
         let tr = document.createElement("tr");
         for (let j = 0; j < 8; j++) {
             let td = document.createElement("td");
+            td.onclick = () => clickFigure(i, j);
             tr.appendChild(td);
         }
         table.appendChild(tr);
@@ -62,4 +63,23 @@ function putFigure(row, column, figure) {
     div.classList.add(figure);
     div.classList.add('figure');
     td.appendChild(div);
+}
+
+let lastFigure;
+
+function clickFigure(row, column) {
+    if (!lastFigure) {
+        if (!isEmpty(row, column)) {
+            lastFigure = { row, column };
+        }
+    } else {
+        if (isEmpty(row, column)) {
+            field[row][column] = field[lastFigure.row][lastFigure.column];
+            lastFigure = undefined;
+        }
+    }
+}
+
+function isEmpty(row, column) {
+    return field[row][column] === 0;
 }
