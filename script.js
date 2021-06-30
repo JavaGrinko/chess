@@ -78,6 +78,7 @@ function clickFigure(row, column) {
             lastFigure = undefined;
         }
     }
+    renderFigure();
 }
 
 function isEmpty(row, column) {
