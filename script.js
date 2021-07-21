@@ -1,4 +1,5 @@
-let level;
+const jsChessEngine = require('js-chess-engine')
+const game = new jsChessEngine.Game()
 
 window.onload = () => {
     let table = document.getElementById('game-field');
@@ -43,80 +44,68 @@ function startGame() {
 }
 
 /*
- Белые:
- 1 - пешка
- 2 - конь
- 3 - слон
- 4 - ладья
- 5 - ферзь
- 6 - король
- Черные:
- 11 - пешка
- 12 - конь
- 13 - слон
- 14 - ладья
- 15 - ферзь
- 16 - король
+    https://ru.wikipedia.org/wiki/Нотация_Форсайта_—_Эдвардса
+    Белые фигуры обозначаются заглавными буквами. 
+    K, Q, R, B, N, P — соответственно белые король, ферзь, ладья, слон, конь, пешка. 
+    k, q, r, b, n, p — соответственно чёрные король, ферзь, ладья, слон, конь, пешка.
+    
  */
 
-let field = [
-    [14, 12, 13, 15, 16, 13, 12, 14],
-    [11, 11, 11, 11, 11, 11, 11, 11],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [4, 2, 3, 5, 6, 3, 2, 4],
-];
+// Перевод позиции из формата A1..H8 в индексы массива
+function placeToIndex(place) {
+    let chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    let row = 8 - Number.parseInt(place[1]);
+    let column = chars.indexOf(place[0]);
+    return { row, column }
+}
 
 function renderFigure() {
-    for (let row = 0; row < 8; row++) {
-        for (let column = 0; column < 8; column++) {
-            switch (field[row][column]) {
-                case 0:
-                    putFigure(row, column, undefined);
-                    break;
-                case 1:
-                    putFigure(row, column, "white-pawn")
-                    break;
-                case 2:
-                    putFigure(row, column, "white-horse")
-                    break;
-                case 3:
-                    putFigure(row, column, "white-elefan")
-                    break;
-                case 4:
-                    putFigure(row, column, "white-rook")
-                    break;
-                case 5:
-                    putFigure(row, column, "white_queen")
-                    break;
-                case 6:
-                    putFigure(row, column, "white-king")
-                    break;
-                case 11:
-                    putFigure(row, column, "black-pawn")
-                    break;
-                case 12:
-                    putFigure(row, column, "black-horse")
-                    break;
-                case 13:
-                    putFigure(row, column, "black-elefan")
-                    break;
-                case 14:
-                    putFigure(row, column, "black-rook")
-                    break;
-                case 15:
-                    putFigure(row, column, "black_queen")
-                    break;
-                case 16:
-                    putFigure(row, column, "black-king")
-                    break;
-            }
+    let { pieces } = game.board.configuration;
+    for (let p in pieces) {
+        let { row, column } = placeToIndex(p);
+        let figure = pieces[p];
+        console.log(figure);
+        switch (figure) {
+            case "P":
+                putFigure(row, column, "white-pawn")
+                break;
+            case "N":
+                putFigure(row, column, "white-horse")
+                break;
+            case "B":
+                putFigure(row, column, "white-elefan")
+                break;
+            case "R":
+                putFigure(row, column, "white-rook")
+                break;
+            case "Q":
+                putFigure(row, column, "white_queen")
+                break;
+            case "K":
+                putFigure(row, column, "white-king")
+                break;
+            case "p":
+                putFigure(row, column, "black-pawn")
+                break;
+            case "n":
+                putFigure(row, column, "black-horse")
+                break;
+            case "b":
+                putFigure(row, column, "black-elefan")
+                break;
+            case "r":
+                putFigure(row, column, "black-rook")
+                break;
+            case "q":
+                putFigure(row, column, "black_queen")
+                break;
+            case "k":
+                putFigure(row, column, "black-king")
+                break;
         }
     }
 }
+
 function putFigure(row, column, figure) {
     let table = document.getElementById('game-field');
     let td = table.children[row].children[column];
