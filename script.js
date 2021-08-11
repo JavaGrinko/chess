@@ -1,5 +1,8 @@
-const jsChessEngine = require('js-chess-engine')
-const game = new jsChessEngine.Game()
+const jsChessEngine = require('js-chess-engine');
+const game = new jsChessEngine.Game();
+let possibleMoves = [];
+let selectedPlace;
+console.log(game);
 
 window.onload = () => {
     let table = document.getElementById('game-field');
@@ -59,12 +62,18 @@ function placeToIndex(place) {
     return { row, column }
 }
 
+// Перевод позиции из индексов массива в формат A1..H8
+function indexToPlace(row, column) {
+    let chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    return chars[column] + (8 - row);
+}
+
 function renderFigure() {
+    clearTable();
     let { pieces } = game.board.configuration;
     for (let p in pieces) {
         let { row, column } = placeToIndex(p);
         let figure = pieces[p];
-        console.log(figure);
         switch (figure) {
             case "P":
                 putFigure(row, column, "white-pawn")
@@ -104,6 +113,17 @@ function renderFigure() {
                 break;
         }
     }
+    renderPossibleMoves();
+}
+
+function clearTable() {
+    let table = document.getElementById('game-field');
+    for (let row = 0; row < 8; row++) {
+        for (let column = 0; column < 8; column++) {
+            let td = table.children[row].children[column];
+            td.innerHTML = "";
+        }
+    }
 }
 
 function putFigure(row, column, figure) {
@@ -116,24 +136,29 @@ function putFigure(row, column, figure) {
     td.appendChild(div);
 }
 
-let lastFigure;
-
-function clickFigure(row, column) {
-    if (!lastFigure) {
-        if (!isEmpty(row, column)) {
-            lastFigure = { row, column };
-        }
-    } else {
-        if (isEmpty(row, column)) {
-            field[row][column] = field[lastFigure.row][lastFigure.column];
-            field[lastFigure.row][lastFigure.column] = 0;
-            lastFigure = undefined;
-
+function renderPossibleMoves() {
+    if (possibleMoves.length > 0) {
+        let table = document.getElementById('game-field');
+        for (let move of possibleMoves) {
+            let { row, column } = placeToIndex(move);
+            console.log(row, column);
+            let td = table.children[row].children[column];
+            let div = document.createElement("div");
+            div.classList.add('possible-move');
+            td.appendChild(div);
         }
     }
-    renderFigure();
 }
 
-function isEmpty(row, column) {
-    return field[row][column] === 0;
+function clickFigure(row, column) {
+    let place = indexToPlace(row, column);
+    if (possibleMoves.length > 0 && possibleMoves.includes(place)) {
+        game.move(selectedPlace, place);    
+        possibleMoves = [];
+        game.aiMove();  
+    } else {
+        possibleMoves = game.moves(place);
+        selectedPlace = place;
+    }
+    renderFigure();
 }

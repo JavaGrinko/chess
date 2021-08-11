@@ -210,3 +210,10 @@ path.two {
         fill: white;
     }
 }
+
+.possible-move {
+    position: absolute;
+    background-color: rgb(122, 122, 255, 0.5);
+    width: 100%;
+    height: 100%;
+}
