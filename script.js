@@ -2,7 +2,7 @@ const jsChessEngine = require('js-chess-engine');
 const game = new jsChessEngine.Game();
 let possibleMoves = [];
 let selectedPlace;
-console.log(game);
+let level;
 
 window.onload = () => {
     let table = document.getElementById('game-field');
@@ -155,10 +155,34 @@ function clickFigure(row, column) {
     if (possibleMoves.length > 0 && possibleMoves.includes(place)) {
         game.move(selectedPlace, place);    
         possibleMoves = [];
-        game.aiMove();  
+        game.aiMove(level);
+        renderHistory(); 
     } else {
         possibleMoves = game.moves(place);
         selectedPlace = place;
     }
     renderFigure();
+}
+
+function renderHistory() {
+    let records = document.getElementById("records");
+    records.innerHTML = "";
+    let history = game.board.history;
+    for (let i = 0; i < history.length; i++) {
+        let h = history[i];
+        let record = document.createElement("div");
+        record.classList.add('record');
+        record.classList.add(i % 2 ? 'white' : 'black');
+        record.innerText = `${h.from} - ${h.to}`;
+        records.appendChild(record);
+    }
+    setTimeout(() => checkMate(), 1000);
+}
+
+function checkMate() {
+    console.log(game.board.configuration.checkMate)
+    if (game.board.configuration.checkMate === true) {
+        console.log('123')
+        document.getElementById("game-over").style["display"] = 'flex';
+    }
 }
