@@ -15,6 +15,7 @@ window.onload = () => {
         }
         table.appendChild(tr);
     }
+    hideLoading();
     renderFigure();
     initMenu();
 }
@@ -155,14 +156,35 @@ function clickFigure(row, column) {
     if (possibleMoves.length > 0 && possibleMoves.includes(place)) {
         game.move(selectedPlace, place);    
         possibleMoves = [];
-        game.aiMove(level);
-        renderHistory(); 
+        showLoading();
+        setTimeout(() => {
+            if (!game.board.configuration.isFinished) {
+                game.aiMove(level);
+            }
+            renderHistory(); 
+            renderFigure();
+            hideLoading();
+        }, 1000);
     } else {
         possibleMoves = game.moves(place);
         selectedPlace = place;
     }
     renderFigure();
 }
+
+function showLoading() {
+    if (level === 0) {
+        document.getElementById("ai-ava").src = "images/monkey.jpeg";
+    } else if (level === 4) {
+        document.getElementById("ai-ava").src = "images/gross.jpeg";
+    }
+    document.getElementById('loading').style['display'] = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loading').style['display'] = 'none';
+}
+
 
 function renderHistory() {
     let records = document.getElementById("records");
